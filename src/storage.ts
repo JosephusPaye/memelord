@@ -179,9 +179,12 @@ async function createAwardsCollection(appDb: Db) {
     async function getAwards(teamId: string) {
         debug('getting awards for team', teamId);
 
-        return Awards.find({
-            teamId,
-        }, { timeout: false });
+        return Awards.find(
+            {
+                teamId,
+            },
+            { timeout: false }
+        );
     }
 
     return { Awards, saveAward, getAwards };
