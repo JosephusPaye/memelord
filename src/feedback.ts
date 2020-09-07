@@ -6,6 +6,7 @@ export enum BotErrorType {
     API_ERROR = 'API_ERROR',
     LAST_DIVIDER_NOT_FOUND = 'LAST_DIVIDER_NOT_FOUND',
     GIVEN_DIVIDER_NOT_FOUND = 'GIVEN_DIVIDER_NOT_FOUND',
+    NO_AWARDEE = 'NO_AWARDEE',
 }
 
 export class BotError extends Error {
@@ -24,6 +25,8 @@ export class BotError extends Error {
                 return '⚠ No divider found. If you have a manually created divider message, type `/tally <message link>` to use that message as the divider.';
             case BotErrorType.GIVEN_DIVIDER_NOT_FOUND:
                 return '⚠ Given divider message not found. Check the message link and try again.';
+            case BotErrorType.NO_AWARDEE:
+                return '⚠ No valid winner specified. The command `/award <@first> [@second] [@third]` requires at least one user mention.';
         }
     }
 }

@@ -18,5 +18,5 @@ export async function divide(
 
     await appStorage.saveDivider(divider);
 
-    debug('Saved divider:', divider);
+    debug('saved divider:', divider);
 }

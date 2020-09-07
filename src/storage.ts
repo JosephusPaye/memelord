@@ -32,6 +32,12 @@ export interface Divider {
     dividerMessageId: string;
 }
 
+export interface Award {
+    teamId: string;
+    date: Date;
+    awardees: string[];
+}
+
 export type TeamScopedData = TeamAccessToken | TeamBotUser | Divider;
 
 type UnPromisify<T> = T extends Promise<infer U> ? U : T;
@@ -65,8 +71,9 @@ async function createAppStorage(appDb: Db) {
     const teamAccessTokens = await createTeamAccessTokensCollection(appDb);
     const teamBotUsers = await createTeamBotUsersCollection(appDb);
     const dividers = await createDividersCollection(appDb);
+    const awards = await createAwardsCollection(appDb);
 
-    return { ...teamAccessTokens, ...teamBotUsers, ...dividers };
+    return { ...teamAccessTokens, ...teamBotUsers, ...dividers, ...awards };
 }
 
 async function createTeamAccessTokensCollection(appDb: Db) {
@@ -84,7 +91,7 @@ async function createTeamAccessTokensCollection(appDb: Db) {
     }
 
     async function getTeamAccessToken(teamId: string) {
-        debug('getting token for team', teamId);
+        debug('getting access token for team', teamId);
 
         const result = await TeamAccessTokens.findOne({
             teamId,
@@ -159,4 +166,23 @@ async function createDividersCollection(appDb: Db) {
     }
 
     return { Dividers, saveDivider, getDivider };
+}
+
+async function createAwardsCollection(appDb: Db) {
+    const Awards = appDb.collection<Award>('Awards');
+    await Awards.createIndex({ teamId: 1 });
+
+    async function saveAward(data: Award) {
+        await Awards.insertOne(data);
+    }
+
+    async function getAwards(teamId: string) {
+        debug('getting awards for team', teamId);
+
+        return Awards.find({
+            teamId,
+        }, { timeout: false });
+    }
+
+    return { Awards, saveAward, getAwards };
 }

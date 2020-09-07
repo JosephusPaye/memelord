@@ -4,7 +4,8 @@
         "target": "ES2018",
         "lib": [
             "ES2018",
-            "dom"
+            "dom",
+            "ES2020.String"
         ],
         "module": "commonjs",
         "esModuleInterop": true,
