@@ -34,7 +34,7 @@ If you use the Meme Lord app from the Slack directory, the following details are
 -   The name and identifier of the channel the app was installed into, as well as the secret access token
 -   The user identifier of the app in your workspace
 -   The user identifiers (not names) of winners when you run `/award`. These are stored for the leaderboard.
--   The message identifier of the last divider when you run `/divide` without an rgument
+-   The message identifier of the last divider when you run `/divide` without an argument
 
 You can run the app on your own server (requires Node.js and MongoDB) if you don't wish to expose the above data.
 
