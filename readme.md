@@ -4,7 +4,6 @@ Meme Lord is a Slack bot that can be used to automatically tally up reactions to
 
 This project is part of [#CreateWeekly](https://dev.to/josephuspaye/createweekly-create-something-new-publicly-every-week-in-2020-1nh9), my attempt to create something new publicly every week in 2020.
 
-
 ## Features
 
 -   Create dividers to separate group of posts (for a weekly meme review for example)
@@ -20,14 +19,12 @@ This project is part of [#CreateWeekly](https://dev.to/josephuspaye/createweekly
 
 ## Commands
 
-| Command   | Format                               | Description                                                                                                                                                                                                                                                                                                             |
-| :-------- | :----------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/divide` | `/divide`                            | Create a divider for a new set of posts. This divider will be used when you run `/tally` without an argument.                                                                                                                                                                                                           |
-| `/tally`  | `/tally [message link]`              | Tally reactions to posts since the last divider, or if specified, since the given message. <br>Arguments: <ul><li><code>[message link]</code> (optional) - the link of a message to use as the divider.</li></ul>                                                                                                       |
-| `/award`  | `/award <@first> [@second] [@third]` | Award one or more users as winner. Each user is `@`-mentioned using their user name. <br>Arguments: <ul><li><code>&lt;@first&gt;</code> (required) - the first place winner</li><li><code>[@second]</code> (option) - the second place winner</li><li><code>[@third]</code> (option) - the third place winner</li></ul> |
-
-| `/leaderboard` | `/leaderboard` | Show the leaderboard of past winners. |
-
+| Command        | Format                                                         | Description                                                                                                                                                                                                                                                                                                                     |
+| :------------- | :------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `/divide`      | `/divide`                                                      | Create a divider for a new set of posts. This divider will be used when you run `/tally` without an argument.                                                                                                                                                                                                                   |
+| `/tally`       | `/tally [message link]`                                        | Tally reactions to posts since the last divider, or if specified, since the given message. <br>**Arguments**: <ul><li><code>[message link]</code> (optional) - the link of a message to use as the divider.</li></ul>                                                                                                           |
+| `/award`       | <code>/award&nbsp;<@first>&nbsp;[@second]&nbsp;[@third]</code> | Award one or more users as winner. Each user is `@`-mentioned using their user name. <br>**Arguments**: <ul><li><code>&lt;@first&gt;</code> (required) - the first place winner</li><li><code>[@second]</code> (optional) - the second place winner</li><li><code>[@third]</code> (optional) - the third place winner</li></ul> |
+| `/leaderboard` | `/leaderboard`                                                 | Show the leaderboard of past winners.                                                                                                                                                                                                                                                                                           |
 
 ## Licence
 
