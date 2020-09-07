@@ -1,6 +1,6 @@
 # Meme Lord
 
-<img src="./memelord.png" alt="Meme Lord icon" width="80" height="80"/>
+<img src="./memelord.png" alt="Meme Lord icon" width="96" height="96" align="left" style="margin-right: 24px" />
 
 Meme Lord is a Slack bot that can be used to automatically tally up reactions to posts in your meme channel and award a winner! It makes for a great companion when doing meme reviews.
 
