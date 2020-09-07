@@ -1,12 +1,12 @@
 import { MongoClient, Db } from 'mongodb';
 import { MongoDbStorage } from 'botbuilder-storage-mongodb/MongoDbStorage';
 
+import { debug } from './bot';
+
 if (!process.env.MONGO_URI) {
-    console.log('MONGO_URI env variable is required for storage');
+    console.error('MONGO_URI env variable is required for storage');
     process.exit();
 }
-
-type UnPromisify<T> = T extends Promise<infer U> ? U : T;
 
 export interface TeamAccessToken {
     teamId: string;
@@ -33,6 +33,8 @@ export interface Divider {
 }
 
 export type TeamScopedData = TeamAccessToken | TeamBotUser | Divider;
+
+type UnPromisify<T> = T extends Promise<infer U> ? U : T;
 
 export type AppStorage = UnPromisify<ReturnType<typeof createAppStorage>>;
 
@@ -82,7 +84,7 @@ async function createTeamAccessTokensCollection(appDb: Db) {
     }
 
     async function getTeamAccessToken(teamId: string) {
-        console.log('getting token for team', teamId);
+        debug('getting token for team', teamId);
 
         const result = await TeamAccessTokens.findOne({
             teamId,
@@ -111,7 +113,7 @@ async function createTeamBotUsersCollection(appDb: Db) {
     }
 
     async function getTeamBotUser(teamId: string) {
-        console.log('getting bot user for team', teamId);
+        debug('getting bot user for team', teamId);
 
         const result = await TeamBotUsers.findOne({
             teamId,
@@ -140,14 +142,17 @@ async function createDividersCollection(appDb: Db) {
     }
 
     async function getDivider(teamId: string) {
-        console.log('getting last divider for team', teamId);
+        debug('getting last divider for team', teamId);
 
         const result = await Dividers.findOne({
             teamId,
         });
 
         if (!result) {
-            console.error('divider not found for team in divider store:', teamId);
+            console.error(
+                'divider not found for team in divider store:',
+                teamId
+            );
         }
 
         return result ? result.dividerMessageId : '';

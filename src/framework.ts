@@ -4,12 +4,14 @@ import {
     SlackMessageTypeMiddleware,
     SlackEventMiddleware,
 } from 'botbuilder-adapter-slack';
-
 import { Request, Response } from 'express';
 
 import { AdapterStorage, AppStorage } from './storage';
 
-export function createSlackBot(adapterStorage: AdapterStorage, appStorage: AppStorage) {
+export function createSlackBot(
+    adapterStorage: AdapterStorage,
+    appStorage: AppStorage
+) {
     const adapter = new SlackAdapter({
         oauthVersion: 'v2',
 
@@ -61,7 +63,7 @@ export function createSlackBot(adapterStorage: AdapterStorage, appStorage: AppSt
     createDefaultRoutes(controller, appStorage);
 
     return { adapter, controller };
-};
+}
 
 function createDefaultRoutes(controller: Botkit, appStorage: AppStorage) {
     // The bot's default route
@@ -78,37 +80,38 @@ function createDefaultRoutes(controller: Botkit, appStorage: AppStorage) {
     });
 
     // Slack redirects to `/install/auth` with the team and bot user details, which we save
-    controller.webserver.get('/install/auth', async (req: Request, res: Response) => {
-        try {
-            const results = await controller.adapter.validateOauthCode(
-                req.query.code
-            );
+    controller.webserver.get(
+        '/install/auth',
+        async (req: Request, res: Response) => {
+            try {
+                const results = await controller.adapter.validateOauthCode(
+                    req.query.code
+                );
 
-            console.log('FULL OAUTH DETAILS', results);
+                // Store the team's access token in the TeamAccessTokens collection
+                await appStorage.saveTeamAccessToken({
+                    teamId: results.team.id,
+                    teamName: results.team.name,
+                    channel: results.incoming_webhook.channel,
+                    channelId: results.incoming_webhook.channel_id,
+                    accessToken: results.access_token,
+                });
 
-            // Store the team's access token in the TeamAccessTokens collection
-            await appStorage.saveTeamAccessToken({
-                teamId: results.team.id,
-                teamName: results.team.name,
-                channel: results.incoming_webhook.channel,
-                channelId: results.incoming_webhook.channel_id,
-                accessToken: results.access_token,
-            });
+                // Store the team's bot user
+                await appStorage.saveTeamBotUser({
+                    teamId: results.team.id,
+                    botUserId: results.bot_user_id,
+                });
 
-            // Store the team's bot user
-            await appStorage.saveTeamBotUser({
-                teamId: results.team.id,
-                botUserId: results.bot_user_id,
-            });
-
-            // Show confirmation
-            res.send(
-                `Success! Meme Lord installed into ${results.team.name} ${results.incoming_webhook.channel}`
-            );
-        } catch (err) {
-            console.error('OAUTH ERROR:', err);
-            res.status(401);
-            res.send(err.message);
+                // Show confirmation
+                res.send(
+                    `Success! Meme Lord installed into ${results.team.name} ${results.incoming_webhook.channel}`
+                );
+            } catch (err) {
+                console.error('OAUTH ERROR:', err);
+                res.status(401);
+                res.send(err.message);
+            }
         }
-    });
+    );
 }
