@@ -1,5 +1,7 @@
 # Meme Lord
 
+<img src="./memelord.png" alt="Meme Lord icon" width="80" height="80"/>
+
 Meme Lord is a Slack bot that can be used to automatically tally up reactions to posts in your meme channel and award a winner! It makes for a great companion when doing meme reviews.
 
 This project is part of [#CreateWeekly](https://dev.to/josephuspaye/createweekly-create-something-new-publicly-every-week-in-2020-1nh9), my attempt to create something new publicly every week in 2020.
