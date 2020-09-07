@@ -26,6 +26,18 @@ This project is part of [#CreateWeekly](https://dev.to/josephuspaye/createweekly
 | `/award`       | <code>/award&nbsp;<@first>&nbsp;[@second]&nbsp;[@third]</code> | Award one or more users as winner. Each user is `@`-mentioned using their user name. <br>**Arguments**: <ul><li><code>&lt;@first&gt;</code> (required) - the first place winner</li><li><code>[@second]</code> (optional) - the second place winner</li><li><code>[@third]</code> (optional) - the third place winner</li></ul> |
 | `/leaderboard` | `/leaderboard`                                                 | Show the leaderboard of past winners.                                                                                                                                                                                                                                                                                           |
 
+## Privacy
+
+If you use the Meme Lord app from the Slack directory, the following details are sent to and stored on our servers. They are necessary to run the app.
+
+-   The name and identifier of the Slack team/workspace
+-   The name and identifier of the channel the app was installed into, as well as the secret access token
+-   The user identifier of the app in your workspace
+-   The user identifiers (not names) of winners when you run `/award`. These are stored for the leaderboard.
+-   The message identifier of the last divider when you run `/divide` without an rgument
+
+You can run the app on your own server (requires Node.js and MongoDB) if you don't wish to expose the above data.
+
 ## Licence
 
 [MIT](LICENCE)
