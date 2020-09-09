@@ -32,13 +32,26 @@ This project is part of [#CreateWeekly](https://dev.to/josephuspaye/createweekly
 
 If you use the Meme Lord app from the Slack directory, the following details are sent to and stored on our servers. They are necessary to run the app.
 
--   The name and identifier of the Slack team/workspace
+-   The name and identifier of the Slack workspace
 -   The name and identifier of the channel the app was installed into, as well as the app's secret access token
 -   The user identifier of the app in your workspace
--   The user identifiers (not names) of winners when you run `/award`. These are stored for the leaderboard.
+-   The user identifiers (not names) of winners and the user running the command when you run `/award`. These are stored for the leaderboard.
 -   The message identifier of the last divider when you run `/divide`
 
-You can run the app on your own server (requires Node.js and MongoDB) if you don't wish to expose the above data.
+You can run the app on your own server (requires Node.js and MongoDB) if you don't wish to expose the above data (see below).
+
+## Self hosting
+
+You can make changes and host the app on your own server:
+
+-   [Create](https://api.slack.com/apps/new) an app on Slack
+-   Clone this repository to your server and run `yarn` to install dependencies
+-   Copy the `.env.example` file to `.env` and fill out the credentials from Slack
+-   Build the source code by running `yarn build`
+-   Start the app by running `yarn start`
+-   Install the app into your workspace by going to `https://<app url on your server>/install`
+-   Go to your meme channel on Slack and invite Meme Lord by typing `/invite @memelord` and confirming
+-   You are now ready to use Meme Lord. See the commands above for how to use.
 
 ## Licence
 
