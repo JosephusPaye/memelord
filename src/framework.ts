@@ -26,14 +26,11 @@ export function createSlackBot(
         clientId: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
         scopes: [
-            'app_mentions:read',
             'channels:history',
             'chat:write',
             'commands',
-            'emoji:read',
             'incoming-webhook',
             'reactions:read',
-            'reactions:write',
         ],
         redirectUri: process.env.REDIRECT_URI,
 
