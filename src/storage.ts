@@ -35,6 +35,7 @@ export interface Divider {
 export interface Award {
     teamId: string;
     date: Date;
+    awarder: string;
     awardees: string[];
 }
 

@@ -16,15 +16,17 @@ export async function award(
     appStorage.saveAward({
         teamId,
         awardees,
+        awarder: message.user,
         date: new Date(),
     });
 
-    const places = ['first', 'second', 'third', 'fourth', 'fifth'];
+    const places = ['first', 'second', 'third'];
 
     const response =
         awardees.length === 1
             ? `🎉 The winner is <@${awardees[0]}>`
             : `🎉 The winners are: ${awardees
+                  .slice(0, 3)
                   .map((user, i) => `<@${user}> (${places[i]})`)
                   .join(', ')}`;
 
