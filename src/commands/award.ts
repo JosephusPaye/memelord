@@ -28,8 +28,8 @@ export async function award(
 
     const response =
         awardees.length === 1
-            ? `🎉 The winner is <@${awardees[0]}>`
-            : `🎉 The winners are: ${awardees
+            ? `🎉 <@${message.user}> awarded <@${awardees[0]}>`
+            : `🎉 <@${message.user}> awarded: ${awardees
                   .slice(0, 3)
                   .map((user, i) => `<@${user}> (${places[i]})`)
                   .join(', ')}`;
