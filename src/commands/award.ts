@@ -11,6 +11,10 @@ export async function award(
 ) {
     const teamId = message.incoming_message.channelData.team_id;
 
+    if(!appStorage.getAdmin(teamId,message.user)){
+        return
+    }
+
     const awardees = extractAwardees(message.text);
 
     appStorage.saveAward({

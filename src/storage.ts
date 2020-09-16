@@ -73,8 +73,9 @@ async function createAppStorage(appDb: Db) {
     const teamBotUsers = await createTeamBotUsersCollection(appDb);
     const dividers = await createDividersCollection(appDb);
     const awards = await createAwardsCollection(appDb);
+    const admins = await createAdminCollection(appDb);
 
-    return { ...teamAccessTokens, ...teamBotUsers, ...dividers, ...awards };
+    return { ...teamAccessTokens, ...teamBotUsers, ...dividers, ...awards, ...admins };
 }
 
 async function createTeamAccessTokensCollection(appDb: Db) {
@@ -189,4 +190,26 @@ async function createAwardsCollection(appDb: Db) {
     }
 
     return { Awards, saveAward, getAwards };
+}
+
+async function createAdminCollection(appDb:Db) {
+    const Admins = appDb.collection<TeamBotUser>("Admins");
+
+    async function setAdmin(data: TeamBotUser) {
+        await Admins.insertOne(data)
+    }
+
+    async function getAdmin(teamId:string, userId:string) {
+        debug('getting admin', userId, 'for team', teamId);
+
+        return Admins.findOne(
+            {
+                teamId,
+                userId
+            },
+            { timeout: false }
+        );
+    }
+
+    return {Admins, setAdmin, getAdmin};
 }
