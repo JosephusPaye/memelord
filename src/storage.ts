@@ -39,6 +39,11 @@ export interface Award {
     awardees: string[];
 }
 
+export interface User {
+    teamId: string;
+    userId:string;
+}
+
 export type TeamScopedData = TeamAccessToken | TeamBotUser | Divider;
 
 type UnPromisify<T> = T extends Promise<infer U> ? U : T;
@@ -193,9 +198,9 @@ async function createAwardsCollection(appDb: Db) {
 }
 
 async function createAdminCollection(appDb:Db) {
-    const Admins = appDb.collection<TeamBotUser>("Admins");
+    const Admins = appDb.collection<User>("Admins");
 
-    async function setAdmin(data: TeamBotUser) {
+    async function setAdmin(data: User) {
         await Admins.insertOne(data)
     }
 
