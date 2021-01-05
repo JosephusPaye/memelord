@@ -5,7 +5,10 @@ import { debug } from './bot';
 
 if (!process.env.MONGO_URI) {
     console.error('MONGO_URI env variable is required for storage');
-    process.exit();
+
+    if (process.env.NODE_ENV !== 'testing') {
+        process.exit();
+    }
 }
 
 export interface TeamAccessToken {
@@ -36,7 +39,7 @@ export interface Award {
     teamId: string;
     date: Date;
     awarder: string;
-    awardees: string[];
+    awardees: string[] | string[][];
 }
 
 export type TeamScopedData = TeamAccessToken | TeamBotUser | Divider;

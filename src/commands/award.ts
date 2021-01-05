@@ -2,7 +2,8 @@ import { BotkitMessage } from 'botkit';
 
 import { SlackBotkitWorker, debug } from '../bot';
 import { AppStorage } from '../storage';
-import { BotError, BotErrorType } from '../feedback';
+
+import { extractAwardees } from './award-support';
 
 let restrictAwardTo: { [key: string]: string[] } | undefined = undefined;
 
@@ -49,36 +50,28 @@ export async function award(
         date: new Date(),
     });
 
-    const places = ['first', 'second', 'third'];
-
     const response =
         awardees.length === 1
             ? `🎉 The winner is <@${awardees[0]}>`
-            : `🎉 The winners are: ${awardees
-                  .slice(0, 3)
-                  .map((user, i) => `<@${user}> (${places[i]})`)
-                  .join(', ')}`;
+            : `🎉 The winners are: ${awardeesToMessage(awardees)}`;
 
     debug('award', response);
 
     await bot.reply(message, response);
 }
 
-// https://regexr.com/5bikn
-const userMentionRegex = /(?:<@(\w+)\|[\w\.]+>)/g;
+function awardeesToMessage(awardees: string[][]) {
+    const places = ['first', 'second', 'third'];
 
-function extractAwardees(messageText: string | undefined) {
-    if (!messageText) {
-        throw new BotError(BotErrorType.NO_AWARDEE);
-    }
-
-    const matches = Array.from(messageText.matchAll(userMentionRegex));
-
-    if (matches.length === 0) {
-        throw new BotError(BotErrorType.NO_AWARDEE);
-    }
-
-    return matches.map((match) => {
-        return match[1]; // [1] is the first capturing group, the user ID
-    });
+    return awardees
+        .map((users, i) => {
+            return (
+                users
+                    .map((user) => {
+                        return `<@${user}>`;
+                    })
+                    .join(', ') + ` (${places[i]})`
+            );
+        })
+        .join(', ');
 }

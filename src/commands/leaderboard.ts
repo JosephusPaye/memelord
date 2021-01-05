@@ -27,29 +27,32 @@ export async function leaderboard(
         }
 
         for (let i = 0; i < award.awardees.length; i++) {
-            const user = award.awardees[i];
+            // .awardees[i] may be a string or an array of strings
+            const users = ([] as string[]).concat(award.awardees[i]);
 
-            const userTally = tally.get(user) ?? {
-                firsts: 0,
-                seconds: 0,
-                thirds: 0,
-            };
+            for (const user of users) {
+                const userTally = tally.get(user) ?? {
+                    firsts: 0,
+                    seconds: 0,
+                    thirds: 0,
+                };
 
-            if (i === 0) {
-                userTally.firsts++;
-            } else if (i === 1) {
-                userTally.seconds++;
-            } else if (i === 2) {
-                userTally.thirds++;
-            } else {
-                debug(
-                    'awardees beyond the first three are not included in leaderboards',
-                    teamId,
-                    award
-                );
+                if (i === 0) {
+                    userTally.firsts++;
+                } else if (i === 1) {
+                    userTally.seconds++;
+                } else if (i === 2) {
+                    userTally.thirds++;
+                } else {
+                    debug(
+                        'awardees beyond the first three are not included in leaderboards',
+                        teamId,
+                        award
+                    );
+                }
+
+                tally.set(user, userTally);
             }
-
-            tally.set(user, userTally);
         }
     }
 
