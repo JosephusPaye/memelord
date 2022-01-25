@@ -41,7 +41,7 @@ export async function award(
         }
     }
 
-    const awardees = extractAwardees(message.text);
+    const awardees = await extractAwardees(bot, message, appStorage);
 
     appStorage.saveAward({
         teamId,
