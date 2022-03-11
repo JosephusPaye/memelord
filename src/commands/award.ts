@@ -52,7 +52,7 @@ export async function award(
 
     const response =
         awardees.length === 1
-            ? `🎉 The winner is <@${awardees[0]}>`
+            ? `🎉 The winner is ${awardeesToMessage(awardees)}`
             : `🎉 The winners are: ${awardeesToMessage(awardees)}`;
 
     debug('award', response);
