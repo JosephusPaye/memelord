@@ -13,11 +13,17 @@ export async function extractAwardees(
 ): Promise<string[][]> {
     const messageText = message.text ? message.text.trim() : '';
 
-    const places =
-        messageText.length > 0
-            ? extractAwardeesFromMessage(messageText)
-            : await extractAwardeesFromTally(bot, message, appStorage);
+    // First we try to extract the @-mentioned awardees from the message text
+    let places = extractAwardeesFromMessage(messageText);
 
+    // If no awardees were mentioned in the message, we try to extract the awardees
+    // by tallying the messages since the dividers specified in the message text
+    // or since the last divider if no dividers are specified in the message text
+    if (places.length === 0) {
+        places = await extractAwardeesFromTally(bot, message, appStorage);
+    }
+
+    // If we still have no awardees, we throw an error
     if (places.length === 0) {
         throw new BotError(BotErrorType.NO_AWARDEE);
     }
