@@ -5,17 +5,34 @@ import { AppStorage } from '../storage';
 import { BotError, BotErrorType } from '../feedback';
 import { getMessagesDelimitedByDividers } from '../api';
 
+interface TallyMessage {
+    ts: string;
+    user: string;
+    reactionCount: number;
+    permalink: string;
+}
+
+type TallyType =
+    | 'since-saved-divider'
+    | 'since-given-divider'
+    | 'between-given-dividers';
+
+interface TallyResult {
+    type: TallyType;
+    messages: TallyMessage[];
+}
+
 export async function tallyMessages(
     bot: SlackBotkitWorker,
     message: BotkitMessage,
     appStorage: AppStorage
-) {
+): Promise<TallyResult> {
     const teamId = message.incoming_message.channelData.team_id;
-    const [dividerStart, dividerEnd] = await getDividers(
-        message.text,
-        teamId,
-        appStorage
-    );
+    const {
+        type: dividersType,
+        start: dividerStart,
+        end: dividerEnd,
+    } = await getDividers(message.text, teamId, appStorage);
 
     const messages = await getMessagesDelimitedByDividers(
         bot.api!,
@@ -27,7 +44,7 @@ export async function tallyMessages(
         }
     );
 
-    const candidateMessages = messages
+    const candidateMessages: TallyMessage[] = messages
         .map((candidate) => {
             const uniqueUserReactions = new Set<string>();
 
@@ -52,8 +69,33 @@ export async function tallyMessages(
                 candidateB.reactionCount - candidateA.reactionCount
         );
 
-    return candidateMessages;
+    return {
+        type:
+            dividersType === 'saved-divider'
+                ? 'since-saved-divider'
+                : dividersType === 'one-given-divider'
+                ? 'since-given-divider'
+                : 'between-given-dividers',
+        messages: candidateMessages,
+    };
 }
+
+type Dividers =
+    | {
+          type: 'saved-divider';
+          start: string;
+          end: undefined;
+      }
+    | {
+          type: 'one-given-divider';
+          start: string;
+          end: undefined;
+      }
+    | {
+          type: 'two-given-dividers';
+          start: string;
+          end: string;
+      };
 
 // Message permalinks are of this form: https://comp3850wil.slack.com/archives/CH2PRFQDU/p1599393257001900
 // The digits after `p` in the last segment are the message "id". They're the "ts" field in the API,
@@ -65,7 +107,7 @@ async function getDividers(
     text: string | undefined,
     teamId: string,
     appStorage: AppStorage
-): Promise<[string, string | undefined]> {
+): Promise<Dividers> {
     if (!text || text.trim().length === 0) {
         const divider = await appStorage.getDivider(teamId);
 
@@ -73,7 +115,7 @@ async function getDividers(
             throw new BotError(BotErrorType.LAST_DIVIDER_NOT_FOUND);
         }
 
-        return [divider, undefined];
+        return { type: 'saved-divider', start: divider, end: undefined };
     } else {
         const regexMatchToDivider = (match: RegExpMatchArray) => {
             const id = match[1];
@@ -91,12 +133,17 @@ async function getDividers(
         );
 
         if (divider1 && divider2) {
-            return [
-                regexMatchToDivider(divider1),
-                regexMatchToDivider(divider2),
-            ];
+            return {
+                type: 'two-given-dividers',
+                start: regexMatchToDivider(divider1),
+                end: regexMatchToDivider(divider2),
+            };
         } else if (divider1) {
-            return [regexMatchToDivider(divider1), undefined];
+            return {
+                type: 'one-given-divider',
+                start: regexMatchToDivider(divider1),
+                end: undefined,
+            };
         } else {
             throw new BotError(BotErrorType.GIVEN_DIVIDER_NOT_FOUND);
         }

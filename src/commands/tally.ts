@@ -10,7 +10,11 @@ export async function tally(
     message: BotkitMessage,
     appStorage: AppStorage
 ) {
-    const allCandidates = await tallyMessages(bot, message, appStorage);
+    const { type, messages: allCandidates } = await tallyMessages(
+        bot,
+        message,
+        appStorage
+    );
 
     const topCandidates = allCandidates.slice(0, 10);
 
@@ -30,12 +34,19 @@ export async function tally(
 
     const hasSurplusCandidates = allCandidates.length > 10;
 
+    const aboutDivider =
+        type === 'since-saved-divider'
+            ? 'since the last divider'
+            : type === 'since-given-divider'
+            ? 'since the given divider'
+            : 'between the given dividers';
+
     const reply =
         tally.length > 0
             ? `📊 ${
                   hasSurplusCandidates ? 'Top 10 posts' : 'Tally of posts'
-              } since the divider:\n${tally.join('\n')}`
-            : 'No posts with reactions since the divider.';
+              } ${aboutDivider}:\n${tally.join('\n')}`
+            : `No posts with reactions ${aboutDivider}.`;
 
     debug('tally', reply);
 

@@ -67,7 +67,11 @@ async function extractAwardeesFromTally(
     message: BotkitMessage,
     appStorage: AppStorage
 ): Promise<string[][]> {
-    const candidates = await tallyMessages(bot, message, appStorage);
+    const { messages: candidates } = await tallyMessages(
+        bot,
+        message,
+        appStorage
+    );
 
     const usersAlreadyAwarded = new Set();
 
