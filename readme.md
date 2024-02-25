@@ -25,12 +25,45 @@ This project is part of [#CreateWeekly](https://twitter.com/JosephusPaye/status/
 
 ## Commands
 
-| Command        | Format                                                                                                                                                                         | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| :------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/divide`      | `/divide`                                                                                                                                                                      | Create a divider for a new set of posts. This divider will be used when you run `/tally` without an argument.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| `/tally`       | <code>/tally</code> <br>or<br> <code>/tally&nbsp;[start&nbsp;message]</code> <br>or<br> <code>/tally&nbsp;[start&nbsp;message]&nbsp;[end&nbsp;message]</code>                  | Tally reactions to posts since the last divider, or if specified, since the given message or between the given messages. <br>**Arguments**: <ul><li><code>[start message]</code> (optional) - the link of a message to use as divider. If specified, tally counts all messages since that message (excluding the message).</li><li><code>[end message]</code> (optional) - the link of a message to use as end divider. If specified in addition to `[start message]`, tally counts all messages between the start and end messages (excluding them).</li></ul>                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| `/award`       | <code>/award</code> <br>or<br> <code>/award&nbsp;[start&nbsp;message]&nbsp;[end&nbsp;message]</code> <br>or<br> <code>/award&nbsp;<@first>&nbsp;[@second]&nbsp;[@third]</code> | Award one or more users as winner. If no arguments are given, will automatically pick winners (based on unique reaction count) for first, second, and third place.<br>When given message links as arguments, will automatically pick winners by tallying the messages delimited by the given links (see `/tally` for details).<br>When given usernames as arguments, each winner can be `@`-mentioned using their user name. The winners will be added to the leaderboard.<br>**Username Arguments**: <ul><li><code>&lt;@first&gt;</code> (required) - the first place winner. Up to three first place winners may be specified by separating with a comma: <code>@firstA,@firstB,@firstC</code></li><li><code>[@second]</code> (optional) - the second place winner. Up to three second place winners may be specified as with first place.</li><li><code>[@third]</code> (optional) - the third place winner. Up to three third place winners may be specified as with first and second places.</li></ul> |
-| `/leaderboard` | `/leaderboard`                                                                                                                                                                 | Show the leaderboard of previous winners.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+### `/divide`
+
+Create a divider for a new set of posts. This divider will be used when you run `/tally` without an argument.
+
+### `/tally`
+
+Tally reactions to posts since the last divider, or if specified the given start and/or end messages.
+
+#### Format
+
+-   `/tally` - counts all messages since the last divider
+-   `/tally [start message]` - counts all messages since the given message link
+-   `/tally [start message] [end message]` - counts all messages between the given message links
+
+#### Arguments
+
+-   `[start message]` (optional) - the link of a message to use as divider. If specified, counts all messages since that message (excluding the message).
+-   `[end message]` (optional) - the link of a message to use as end divider. If specified in addition to `[start message]`, counts all messages between the start and end messages (excluding them).
+
+### `/award`
+
+Award one or more users as winner, and add them to the leaderboard.
+
+#### Format
+
+-   `/award` - automatically picks winners (based on unique reaction count) for first, second, and third place by tallying messages since the last divider.
+-   `/award [start message]` - automatically picks winners by tallying messages since the given message link.
+-   `/award [start message] [end message]` - automatically picks winners by tallying messages between the given message links.
+-   `/award <@first> [@second] [@third]` - manually specify winners by user name. See below for syntax.
+
+**Manual award syntax**
+
+-   `<@first>` (required) - the first place winner or winners. Up to three first place winners may be specified by separating with a comma: `@firstA,@firstB,@firstC`.
+-   `[@second]` (optional) - the second place winner or winners. Up to three second place winners may be specified in the same manner as first place.
+-   `[@third]` (optional) - the third place winner or winners. Up to three third place winners may be specified in the same manner as first and second places.
+
+### `/leaderboard`
+
+Show the leaderboard of previous winners.
 
 ## Privacy
 
