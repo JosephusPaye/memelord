@@ -3,7 +3,7 @@ import { BotkitMessage } from 'botkit';
 import { SlackBotkitWorker } from '../bot';
 import { AppStorage } from '../storage';
 import { BotError, BotErrorType } from '../feedback';
-import { getMessagesSinceDivider } from '../api';
+import { getMessagesDelimitedByDividers } from '../api';
 
 export async function tallyMessages(
     bot: SlackBotkitWorker,
@@ -11,12 +11,21 @@ export async function tallyMessages(
     appStorage: AppStorage
 ) {
     const teamId = message.incoming_message.channelData.team_id;
-    const divider = await getDivider(message.text, teamId, appStorage);
+    const [dividerStart, dividerEnd] = await getDividers(
+        message.text,
+        teamId,
+        appStorage
+    );
 
-    const messages = await getMessagesSinceDivider(bot.api!, divider, {
-        channel: message.channel,
-        botUserId: await appStorage.getTeamBotUser(teamId),
-    });
+    const messages = await getMessagesDelimitedByDividers(
+        bot.api!,
+        dividerStart,
+        dividerEnd,
+        {
+            channel: message.channel,
+            botUserId: await appStorage.getTeamBotUser(teamId),
+        }
+    );
 
     const candidateMessages = messages
         .map((candidate) => {
@@ -50,34 +59,46 @@ export async function tallyMessages(
 // The digits after `p` in the last segment are the message "id". They're the "ts" field in the API,
 // but without the dot that separates the first set of digits from the last 6 digits in "ts".
 // So "p1599393257001900" (permalink last segment) ==> "1599393257.001900" (ts field)
-const messagePermalinkIdRegex = /https?:\/\/.*\.slack\.com\/archives\/.*\/p(\d*)/;
+const messagePermalinkIdRegex = /https?:\/\/.*?\.slack\.com\/archives\/.*?\/p(\d*)/g;
 
-async function getDivider(
+async function getDividers(
     text: string | undefined,
     teamId: string,
     appStorage: AppStorage
-) {
-    let divider: string;
-
+): Promise<[string, string | undefined]> {
     if (!text || text.trim().length === 0) {
-        divider = await appStorage.getDivider(teamId);
+        const divider = await appStorage.getDivider(teamId);
 
         if (!divider) {
             throw new BotError(BotErrorType.LAST_DIVIDER_NOT_FOUND);
         }
-    } else {
-        const matches = messagePermalinkIdRegex.exec(text);
 
-        if (matches) {
-            const id = matches[1];
-            divider = [
+        return [divider, undefined];
+    } else {
+        const regexMatchToDivider = (match: RegExpMatchArray) => {
+            const id = match[1];
+
+            const divider = [
                 id.slice(0, -6), // from start to before last 6 chars
                 id.replace(id.slice(0, -6), ''), // last 6 chars
             ].join('.');
+
+            return divider;
+        };
+
+        const [divider1, divider2] = Array.from(
+            text.matchAll(messagePermalinkIdRegex)
+        );
+
+        if (divider1 && divider2) {
+            return [
+                regexMatchToDivider(divider1),
+                regexMatchToDivider(divider2),
+            ];
+        } else if (divider1) {
+            return [regexMatchToDivider(divider1), undefined];
         } else {
             throw new BotError(BotErrorType.GIVEN_DIVIDER_NOT_FOUND);
         }
     }
-
-    return divider;
 }

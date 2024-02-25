@@ -47,14 +47,16 @@ function assertApiResultOK(result: WebAPICallResult) {
     }
 }
 
-export async function getMessagesSinceDivider(
+export async function getMessagesDelimitedByDividers(
     api: WebClient,
-    divider: string,
+    dividerStart: string,
+    dividerEnd: string | undefined,
     data: { channel: string; botUserId: string }
 ): Promise<SlackMessage[]> {
     const query = {
         channel: data.channel,
-        oldest: divider,
+        oldest: dividerStart,
+        latest: dividerEnd,
         inclusive: true,
     };
 
@@ -63,16 +65,16 @@ export async function getMessagesSinceDivider(
 
     const initialMessages = result.messages as SlackMessage[];
 
-    // The oldest message (last in the list) will be the divider,
+    // The oldest message (last in the list) will be the start divider,
     // otherwise no divider was found.
     if (
         initialMessages.length === 0 ||
-        initialMessages[initialMessages.length - 1].ts !== divider
+        initialMessages[initialMessages.length - 1].ts !== dividerStart
     ) {
         throw new BotError(BotErrorType.LAST_DIVIDER_NOT_FOUND);
     }
 
-    const messages = initialMessages.slice(0, -1); // removes the divider
+    const messages = initialMessages.slice(0, -1); // removes the start divider
 
     await getNextPage(
         result,
@@ -89,8 +91,13 @@ export async function getMessagesSinceDivider(
         }
     );
 
-    // Remove messages by the bot
-    return messages.filter((message) => message.user !== data.botUserId);
+    // Remove messages by the bot and messages with the same ts as the end divider if it was specified
+    return messages.filter((message) => {
+        return (
+            message.user !== data.botUserId &&
+            (dividerEnd !== undefined ? message.ts !== dividerEnd : true)
+        );
+    });
 }
 
 export async function fetchAndAttachPermalinks<
