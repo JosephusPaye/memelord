@@ -31,7 +31,7 @@ Create a divider for a new set of posts. This divider will be used when you run 
 
 ### `/tally`
 
-Tally reactions to posts since the last divider, or if specified the given start and/or end messages.
+Tally reactions to posts since the last divider, or if specified, the given start and end messages.
 
 #### Format
 
@@ -41,25 +41,25 @@ Tally reactions to posts since the last divider, or if specified the given start
 
 #### Arguments
 
--   `[start message]` (optional) - the link of a message to use as divider. If specified, counts all messages since that message (excluding the message).
--   `[end message]` (optional) - the link of a message to use as end divider. If specified in addition to `[start message]`, counts all messages between the start and end messages (excluding them).
+-   `[start message]` - the link of a message to use as start divider. If specified, counts all messages since that message (excluding the message).
+-   `[end message]` - the link of a message to use as end divider. If specified in addition to `[start message]`, counts all messages between the start and end messages (excluding them).
 
 ### `/award`
 
-Award one or more users as winner, and add them to the leaderboard.
+Award one or more users as winners, and add them to the leaderboard. Can automatically pick winners for first, second, and third place based on unique reaction count.
 
 #### Format
 
--   `/award` - automatically picks winners (based on unique reaction count) for first, second, and third place by tallying messages since the last divider.
+-   `/award` - automatically picks winners by tallying messages since the last divider.
 -   `/award [start message]` - automatically picks winners by tallying messages since the given message link.
 -   `/award [start message] [end message]` - automatically picks winners by tallying messages between the given message links.
--   `/award <@first> [@second] [@third]` - manually specify winners by user name. See below for syntax.
+-   `/award [@first] [@second] [@third]` - manually specify winners by user name. See below for syntax.
 
-**Manual award syntax**
+#### Manual award syntax
 
 -   `<@first>` (required) - the first place winner or winners. Up to three first place winners may be specified by separating with a comma: `@firstA,@firstB,@firstC`.
--   `[@second]` (optional) - the second place winner or winners. Up to three second place winners may be specified in the same manner as first place.
--   `[@third]` (optional) - the third place winner or winners. Up to three third place winners may be specified in the same manner as first and second places.
+-   `[@second]` - the second place winner or winners. Up to three second place winners may be specified in the same manner as first place.
+-   `[@third]` - the third place winner or winners. Up to three third place winners may be specified in the same manner as first and second places.
 
 ### `/leaderboard`
 
